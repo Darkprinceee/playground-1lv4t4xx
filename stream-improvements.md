@@ -68,7 +68,7 @@ We have an application that is processing payments being made on an ecommerce we
 final List<Payment> expensivePayments = paymentsByValue
     .stream()
     .filter(payment -> payment.getValue() >= 500)
-    .collect(Collectors.toList());
+    .collect(toList());
 ```
 
 Unfortunately the downside of this approach is that if you start processing lots and lots of transactions in a day the `filter` operation gets applied to every transaction in your input list. You know that your input list is sorted by descending value of the transaction, so once you have found a transaction that fails your predicate every transaction after that point can be filtered out. Thankfully Java 9 solves this problem with the addition of a takeWhile operation.
@@ -102,25 +102,65 @@ System.out.println(expensivePayments);
 }
 
 class Payment {
-	private final int value;
+    private final int value;
 
-	Payment(int value) {
-		this.value = value;
-	}
+    Payment(int value) {
+        this.value = value;
+    }
 
-	int getValue() {
-		return value;
-	}
+    int getValue() {
+        return value;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("Payment(value: %d)", value);
-	}
+    @Override
+    public String toString() {
+        return String.format("Payment(value: %d)", value);
+    }
 }
 //}
 ```
 
 While `filter` retains all elements in the Stream that match its predicate, `takeWhile` stops once it has found an element that fails to match. The `dropWhile` operation does the inverse: throws away the elements at the start where the predicate is false.
+
+One subtlety that affects `takeWhile()` and `dropWhile()` relates to infinite streams. If you have an infinite stream and apply a `takeWhile` operation that eventually returns false on an element in the stream then it gets truncated at that point. When applying the `dropWhile` operation to an infinite stream, the result can still be an infinite stream. If the the predicate always returns true then the Stream will continue to drop elements. Consider:
+
+```java
+IntStream.iterate(0, i -> i)
+    .dropWhile(i -> true)
+    .forEach(System.out::println);
+```
+
+If you run this, the program will look like it's hanging and not terminate. This is because the `dropWhile` results in an infinite stream with no elements. If we re-wrote it as the following program, then it would terminate:
+
+```java
+IntStream.iterate(0, i -> i)
+    .dropWhile(i -> true)
+    .forEach(System.out::println);
+```
+
+Here's a visual example:
+
+```java runnable
+// { autofold
+import java.util.stream.IntStream;
+
+public class Main {
+    public static void main(String[] args) {
+// }
+
+IntStream.iterate(0, i -> ++i)
+    .takeWhile(i -> i < 5)
+    .forEach(System.out::println);
+
+//{ autofold
+    }
+}
+//}
+```
+
+Now so far we've talked about streams that have a defined order: an encounter order. The order of streams can be defined at its source, for example if we're streaming from a list of values then the order in the list is the encounter order. It is also possible to have stream operations that introduce an encounter order into their pipeline, for example `sorted()`. Most, but not all, of the practical use cases of `takeWhile()` and `dropWhile()` rely upon their input streams having a defined encounter order.
+
+One usecase for wanting to apply `takeWhile()` on an unordered stream if you want to be able to stop the Stream operation. For example perhaps you have a Stream operation that may operate on an infinite stream, processing all the data in it, but you want to be able to stop the Stream when you application shuts down or if a user needs to cancel the stream pipeline. You can do this with a takeWhile() operation that reads from a piece of external state, such as a volatile boolean flag. When you want to stop the stream pipeline, you simply set it to be false.
 
 # Notes
 This playground is based on IteratrLearning's article [Stream Improvements in Java 9](http://iteratrlearning.com/java9/2016/08/06/java9-streams.html)
