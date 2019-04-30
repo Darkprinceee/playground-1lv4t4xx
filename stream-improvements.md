@@ -41,6 +41,8 @@ Even after this refactor, however, the code reads slightly inelegantly. Java 9's
 
 ```java runnable
 // { autofold
+import java.util.stream.Stream;
+
 public class Main {
 
 public static void main(String[] args) {
