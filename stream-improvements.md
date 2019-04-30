@@ -53,6 +53,7 @@ final String configurationDirectory =
         .flatMap(key -> Stream.ofNullable(System.getProperty(key)))
         .findFirst()
         .orElseThrow(IllegalStateException::new);
+System.out.println(configurationDirectory);
 
 //{ autofold
 }
