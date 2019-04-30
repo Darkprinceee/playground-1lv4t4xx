@@ -42,7 +42,7 @@ Even after this refactor, however, the code reads slightly inelegantly. Java 9's
 // { autofold
 import java.util.stream.Stream;
 
-public class OfNullable {
+public class Main {
     public static void main(String[] args) {
 // }
 
@@ -79,7 +79,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class TakeWhile {
+public class Main {
     public static void main(String[] args) {
         List<Payment> paymentsByValue = List.of(
             new Payment(900),
