@@ -4,3 +4,9 @@ plan:
   statement: stream-improvements.md
 - title: Collectors Improvements
   statement: collectors-improvements.md
+- title: Optional Improvements
+  statement: optional-improvements.md
+- title: CompletableFuture Improvements
+  statement: completable-future-improvements.md
+- title: Collection Factory Methods
+  statement: collection-factory-methods.md
