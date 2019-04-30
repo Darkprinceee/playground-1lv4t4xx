@@ -93,6 +93,7 @@ public class Main {
 
 final List<Payment> expensivePayments = paymentsByValue
     .stream()
+    // try changing to dropWhile and see what happens
     .takeWhile(payment -> payment.getValue() >= 500)
     .collect(toList());
 System.out.println(expensivePayments);
@@ -161,6 +162,42 @@ IntStream.iterate(0, i -> ++i)
 Now so far we've talked about streams that have a defined order: an encounter order. The order of streams can be defined at its source, for example if we're streaming from a list of values then the order in the list is the encounter order. It is also possible to have stream operations that introduce an encounter order into their pipeline, for example `sorted()`. Most, but not all, of the practical use cases of `takeWhile()` and `dropWhile()` rely upon their input streams having a defined encounter order.
 
 One usecase for wanting to apply `takeWhile()` on an unordered stream if you want to be able to stop the Stream operation. For example perhaps you have a Stream operation that may operate on an infinite stream, processing all the data in it, but you want to be able to stop the Stream when you application shuts down or if a user needs to cancel the stream pipeline. You can do this with a takeWhile() operation that reads from a piece of external state, such as a volatile boolean flag. When you want to stop the stream pipeline, you simply set it to be false.
+
+# iterate
+
+A related update is the introduction of an alternative `iterate()` method for creating streams. The vintage `iterate` method from Java 8 takes an initial value and a function that provides the next value in the Stream. Take a look at the following code example.
+
+```java
+IntStream.iterate(3, x -> x + 3)
+     .filter(x -> x < 16)
+     .forEach(System.out::println);
+```
+
+This code prints out all the numbers that are divisible by 3 and less than 16. We start with 3, which is divisible by 3 and add 3 every time we iterate. We then filter to ensure that the numbers are less than 16 and use a method reference to print out the resulting numbers. Looks simple, but if you run it you'll find that there's a pretty big problem.
+
+The program never terminates, it keeps on adding 3 in a loop indefinitely. That's because there's no way to know in the filter that the numbers continue to increase. We can solve that problem with the new version of `iterate` in Java 9 which also takes a predicate as its second argument that tells us when to continue iterating up until. So we rewrite our code as follows.
+
+```java runnable
+// { autofold
+import java.util.stream.IntStream;
+
+public class Main {
+    public static void main(String[] args) {
+// }
+
+IntStream.iterate(3, x -> x < 16, x -> x + 3)
+    .forEach(System.out::println);
+
+//{ autofold
+    }
+}
+//}
+```
+
+Hey presto, it now stops running after it has printed out the number 15. Our sample code here used the `IntStream` interface since we were operating on primitive int values, but the `iterate()` methods appear on both the primitive and regular Stream interfaces.
+
+# Conclusion
+In this article we've gone through four new additions to the Streams API that appear in Java 9 and help fill in some small gaps in its functionality. In the next article we will be talking about the improvements to the Collectors API in Java 9. Hopefully you will join us for that, or on one of our in-house [training courses](http://iteratrlearning.com/).
 
 # Notes
 This playground is based on IteratrLearning's article [Stream Improvements in Java 9](http://iteratrlearning.com/java9/2016/08/06/java9-streams.html)
