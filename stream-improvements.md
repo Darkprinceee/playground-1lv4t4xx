@@ -134,7 +134,7 @@ If you run this, the program will look like it's hanging and not terminate. This
 
 ```java
 IntStream.iterate(0, i -> i)
-    .dropWhile(i -> true)
+    .takeWhile(i -> false)
     .forEach(System.out::println);
 ```
 
