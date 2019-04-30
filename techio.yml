@@ -1,4 +1,6 @@
-title: LOL - Simple Java Template
+title: Java 9 Improvements
 plan:
-- title: Java Snippet
-  statement: statement.md
+- title: Stream Improvements
+  statement: stream-improvements.md
+- title: Collectors Improvements
+  statement: collectors-improvements.md
