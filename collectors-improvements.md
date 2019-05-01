@@ -24,23 +24,23 @@ class Expense {
         this.amount = amount;
         this.year = year;
         this.tags = tags;
-	}
+    }
 
-	long getAmount() {
-		return amount;
-	}
+    long getAmount() {
+        return amount;
+    }
 
-	int getYear() {
-		return year;
-	}
+    int getYear() {
+        return year;
+    }
 
-	List<Tag> getTags() {
-		return tags;
-	}
+    List<Tag> getTags() {
+        return tags;
+    }
 }
 
 enum Tag {
-	FOOD, ENTERTAINMENT, TRAVEL, UTILITY
+    FOOD, ENTERTAINMENT, TRAVEL, UTILITY
 }
 ```
 
@@ -79,11 +79,11 @@ import static java.util.stream.Collectors.summingLong;
 import static java.util.stream.Collectors.toList;
 
 public class Main {
-	public static void main(String[] args) {
-		List<Expense> expenses = List.of(
-			new Expense(500, 2016, List.of(Tag.FOOD, Tag.ENTERTAINMENT)),
-			new Expense(1_500, 2016, List.of(Tag.UTILITY)),
-			new Expense(700, 2015, List.of(Tag.TRAVEL, Tag.ENTERTAINMENT)));
+    public static void main(String[] args) {
+        List<Expense> expenses = List.of(
+            new Expense(500, 2016, List.of(Tag.FOOD, Tag.ENTERTAINMENT)),
+            new Expense(1_500, 2016, List.of(Tag.UTILITY)),
+            new Expense(700, 2015, List.of(Tag.TRAVEL, Tag.ENTERTAINMENT)));
 // }
 
 Map<Integer, List<Expense>> listOfExpensesByYear = expenses
@@ -94,40 +94,40 @@ Map<Integer, List<Expense>> listOfExpensesByYear = expenses
 System.out.println(listOfExpensesByYear);
 
 //{ autofold
-	}
+    }
 }
 
 class Expense {
-	private final long amount;
-	private final int year;
-	private final List<Tag> tags;
+    private final long amount;
+    private final int year;
+    private final List<Tag> tags;
 
-	Expense(long amount, int year, List<Tag> tags) {
-		this.amount = amount;
-		this.year = year;
-		this.tags = tags;
-	}
+    Expense(long amount, int year, List<Tag> tags) {
+        this.amount = amount;
+        this.year = year;
+        this.tags = tags;
+    }
 
-	long getAmount() {
-		return amount;
-	}
+    long getAmount() {
+        return amount;
+    }
 
-	int getYear() {
-		return year;
-	}
+    int getYear() {
+        return year;
+    }
 
-	List<Tag> getTags() {
-		return tags;
-	}
+    List<Tag> getTags() {
+        return tags;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("Expense(amount: %d, year: %d, tags: %s)", amount, year, tags);
-	}
+    @Override
+    public String toString() {
+        return String.format("Expense(amount: %d, year: %d, tags: %s)", amount, year, tags);
+    }
 }
 
 enum Tag {
-	FOOD, ENTERTAINMENT, TRAVEL, UTILITY
+    FOOD, ENTERTAINMENT, TRAVEL, UTILITY
 }
 //}
 ```
@@ -165,11 +165,11 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toSet;
 
 public class Main {
-	public static void main(String[] args) {
-		List<Expense> expenses = List.of(
-			new Expense(500, 2016, List.of(Tag.FOOD, Tag.ENTERTAINMENT)),
-			new Expense(1_500, 2016, List.of(Tag.UTILITY)),
-			new Expense(700, 2015, List.of(Tag.TRAVEL, Tag.ENTERTAINMENT)));
+    public static void main(String[] args) {
+        List<Expense> expenses = List.of(
+            new Expense(500, 2016, List.of(Tag.FOOD, Tag.ENTERTAINMENT)),
+            new Expense(1_500, 2016, List.of(Tag.UTILITY)),
+            new Expense(700, 2015, List.of(Tag.TRAVEL, Tag.ENTERTAINMENT)));
 // }
 
 Map<Integer, Set<Tag>> tagsByYear = expenses
@@ -180,40 +180,40 @@ Map<Integer, Set<Tag>> tagsByYear = expenses
 System.out.println(tagsByYear);
 
 //{ autofold
-	}
+    }
 }
 
 class Expense {
-	private final long amount;
-	private final int year;
-	private final List<Tag> tags;
+    private final long amount;
+    private final int year;
+    private final List<Tag> tags;
 
-	Expense(long amount, int year, List<Tag> tags) {
-		this.amount = amount;
-		this.year = year;
-		this.tags = tags;
-	}
+    Expense(long amount, int year, List<Tag> tags) {
+        this.amount = amount;
+        this.year = year;
+        this.tags = tags;
+    }
 
-	long getAmount() {
-		return amount;
-	}
+    long getAmount() {
+        return amount;
+    }
 
-	int getYear() {
-		return year;
-	}
+    int getYear() {
+        return year;
+    }
 
-	List<Tag> getTags() {
-		return tags;
-	}
+    List<Tag> getTags() {
+        return tags;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("Expense(amount: %d, year: %d, tags: %s)", amount, year, tags);
-	}
+    @Override
+    public String toString() {
+        return String.format("Expense(amount: %d, year: %d, tags: %s)", amount, year, tags);
+    }
 }
 
 enum Tag {
-	FOOD, ENTERTAINMENT, TRAVEL, UTILITY
+    FOOD, ENTERTAINMENT, TRAVEL, UTILITY
 }
 //}
 ```
