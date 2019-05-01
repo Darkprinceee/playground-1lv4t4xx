@@ -21,6 +21,7 @@ Let's be honest - this is a pretty significant improvement. The `List` returned 
 
 ```java runnable
 // { autofold
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,8 +62,8 @@ An alternative is to provide some methods that construct collections from values
 
 ```java runnable
 // { autofold
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
