@@ -180,6 +180,7 @@ CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.L
     .thenCombine(CompletableFuture.supplyAsync(() -> exchangeService.rateFor(Currency.GBP)),
         Main::convert)
     .acceptEither(
+        // try decreasing timeout to 1 TimeUnit.MILLISECONDS and see what happens
         timeoutAfter(1, TimeUnit.SECONDS),
         amount -> System.out.printf("The price is %s %s", amount, Currency.GBP));
 
@@ -335,6 +336,7 @@ public class Main {
 CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.LCY, AirportCode.JFK), executorService)
     .thenCombine(CompletableFuture.supplyAsync(() -> exchangeService.rateFor(Currency.GBP)),
         Main::convert)
+    // try decreasing timeout to 1 TimeUnit.MILLISECONDS and see what happens
     .orTimeout(1, TimeUnit.SECONDS)
     .whenComplete((amount, error) -> {
         if (error == null) {
@@ -477,6 +479,7 @@ public class Main {
 CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.LCY, AirportCode.JFK), executorService)
     .thenCombine(CompletableFuture.supplyAsync(() -> exchangeService.rateFor(Currency.GBP)),
         Main::convert)
+    // try decreasing timeout to 1 TimeUnit.MILLISECONDS and see what happens
     .completeOnTimeout(DEFAULT_PRICE, 1, TimeUnit.SECONDS)
     .thenAccept(amount -> {
         System.out.printf("The price is %s %s", amount, Currency.GBP);
