@@ -164,7 +164,6 @@ Now so far we've talked about streams that have a defined order: an encounter or
 One usecase for wanting to apply `takeWhile()` on an unordered stream if you want to be able to stop the Stream operation. For example perhaps you have a Stream operation that may operate on an infinite stream, processing all the data in it, but you want to be able to stop the Stream when you application shuts down or if a user needs to cancel the stream pipeline. You can do this with a takeWhile() operation that reads from a piece of external state, such as a volatile boolean flag. When you want to stop the stream pipeline, you simply set it to be false.
 
 # iterate
-
 A related update is the introduction of an alternative `iterate()` method for creating streams. The vintage `iterate` method from Java 8 takes an initial value and a function that provides the next value in the Stream. Take a look at the following code example.
 
 ```java
