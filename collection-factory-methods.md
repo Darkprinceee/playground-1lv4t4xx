@@ -69,9 +69,9 @@ public class Main {
     public static void main(String[] args) {
 // }
 
-var list = List.of("Hello", "World", "from", "Java");
+var list = List.of("List", "of", "elements");
 System.out.println(list);
-var set = Set.of("Hello", "World", "from", "Java", "World");
+var set = Set.of("Set", "of", "elements");
 System.out.println(set);
 
 //{ autofold
