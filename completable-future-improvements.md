@@ -20,7 +20,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 public class Main {
-
     private static FlightRoutePriceFinder flightRoutePriceFinder = new FlightRoutePriceFinder();
     private static ExchangeService exchangeService = new ExchangeService();
 
@@ -146,6 +145,158 @@ System.out.printf("The price is %f %s", amount, Currency.GBP);
 ```
 
 Unfortunately this code is still blocking and prevents the main thread from doing useful work in the meantime! To tackle this issue, you can refactor the above code to use `thenAccept` and provide a callback which is executed when the result is finally available:
+
+```java
+CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.LCY, AirportCode.JFK))
+    .thenCombine(CompletableFuture.supplyAsync(() -> exchangeService.rateFor(Currency.GBP)),
+        Main::convert)
+    .thenAccept(amount -> System.out.printf("The price is %f %s", amount, Currency.GBP));
+```
+
+However, using this approach we lost the timeout functionality! Ideally we'd like to specify a timeout using a non-blocking method. Unfortunately there isn't a built-in elegant support to solve this problem in Java 8. Solutions available include using `acceptEither` or `applyToEither` together with the `CompletableFuture` you are waiting the result for and another `CompletableFuture` which wraps up a `ScheduledThreadpoolExecutor` that throws a `TimeoutException` after a certain time:
+
+```java runnable
+// { autofold
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
+
+public class Main {
+    private static FlightRoutePriceFinder flightRoutePriceFinder = new FlightRoutePriceFinder();
+    private static ExchangeService exchangeService = new ExchangeService();
+    private static ScheduledExecutorService delayer = Executors.newScheduledThreadPool(1);
+
+    public static void main(String[] args) throws InterruptedException {
+// }
+
+CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.LCY, AirportCode.JFK))
+    .thenCombine(CompletableFuture.supplyAsync(() -> exchangeService.rateFor(Currency.GBP)),
+        Main::convert)
+    .acceptEither(
+        timeoutAfter(1, TimeUnit.SECONDS),
+        amount -> System.out.printf("The price is %f %s", amount, Currency.GBP));
+
+//{ autofold
+        delayer.awaitTermination(1, TimeUnit.SECONDS);
+        delayer.shutdown();
+    }
+
+    private static <T> CompletableFuture<T> timeoutAfter(long timeout, TimeUnit unit) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        delayer.schedule(() -> future.completeExceptionally(new TimeoutException()), timeout, unit);
+        return future;
+    }
+
+    private static BigDecimal convert(BigDecimal price, BigDecimal rate) {
+        return Utils.decimal(price.multiply(rate));
+    }
+}
+
+class FlightRoutePriceFinder {
+    BigDecimal bestFor(AirportCode departure, AirportCode destination) {
+        return bestPriceWithDelay(departure, destination);
+    }
+
+    private BigDecimal bestPriceWithDelay(AirportCode departure, AirportCode destination) {
+        return new Delay<BigDecimal>().random()
+            .then(() -> {
+                double price = 10 * Utils.randomChar(departure.getName()) + Utils.randomChar(destination.getName());
+                return Utils.decimal(price);
+            });
+    }
+}
+
+enum AirportCode {
+    LCY("London City Airport"), JFK("John F. Kennedy International Airport");
+
+    private final String name;
+
+    AirportCode(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+enum Currency {
+    USD(1.0), GBP(0.769375);
+
+    public final BigDecimal rate;
+
+    Currency(Double rate) {
+        this.rate = new BigDecimal(rate.toString());
+    }
+}
+
+class ExchangeService {
+    BigDecimal rateFor(Currency currency) {
+        return rateWithDelayFor(currency);
+    }
+
+    private BigDecimal rateWithDelayFor(Currency currency) {
+        return new Delay<BigDecimal>().random()
+            .then(() -> currency.rate);
+    }
+}
+
+class Delay<T> {
+    private static final int MIN_DELAY_IN_MS = 750;
+    private static final int MAX_DELAY_IN_MS = 1000;
+
+    Delay<T> random() {
+        int delayInMs = ThreadLocalRandom.current().nextInt(MIN_DELAY_IN_MS, MAX_DELAY_IN_MS);
+        try {
+            Thread.sleep(delayInMs);
+        } catch (InterruptedException exception) {
+            throw new RuntimeException(exception);
+        }
+        return this;
+    }
+
+    T then(Supplier<T> supplier) {
+        return supplier.get();
+    }
+}
+
+class Utils {
+    private static final int SCALE = 2;
+
+    static char randomChar(String value) {
+        int randomInt = new Random().nextInt(value.length());
+        return value.charAt(randomInt);
+    }
+
+    static BigDecimal decimal(double value) {
+        BigDecimal bigDecimal = new BigDecimal(value);
+        bigDecimal = bigDecimal.setScale(SCALE, RoundingMode.HALF_UP);
+        return bigDecimal;
+    }
+
+    static BigDecimal decimal(BigDecimal value) {
+        return decimal(value.doubleValue());
+    }
+}
+//}
+```
+
+A simple implementation of `timeoutAfter` is as follows where `delayer` is an instance of a `ScheduledThreadPoolExecutor`:
+
+```java
+<T> CompletableFuture<T> timeoutAfter(long timeout, TimeUnit unit) {
+    CompletableFuture<T> future = new CompletableFuture<>();
+    delayer.schedule(() -> future.completeExceptionally(new TimeoutException()), timeout, unit);
+    return future;
+}
+```
 
 # Notes
 This playground is based on IteratrLearning's article [Asynchronous timeouts with CompletableFutures in Java 8 and Java 9](http://iteratrlearning.com/java9/2016/09/13/java9-timeouts-completablefutures.html)
