@@ -161,6 +161,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
@@ -173,7 +174,7 @@ public class Main {
     private static ExchangeService exchangeService = new ExchangeService();
     private static ScheduledExecutorService delayer = Executors.newScheduledThreadPool(1);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, TimeoutException, ExecutionException {
 // }
 
 CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.LCY, AirportCode.JFK))
