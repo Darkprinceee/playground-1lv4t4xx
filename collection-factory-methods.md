@@ -54,6 +54,31 @@ Some programming languages offer a feature to solve this problem by adding Colle
 def values = ["Hello", "World", "from", "Java"] as Set
 ```
 
+Now adding new language features to the Java language is an expensive process. It takes a lot of engineering time and each language feature has huge opportunity cost. That is to say that you could spend that engineering time improving other language features and quite possibly get a bigger win!
+
+# Collection Factories
+An alternative is to provide some methods that construct collections from values and using a var-args constructor to make them syntactically shorter like collection literals. This is the choice that was made in Java 9, so we can do the following:
+
+```java runnable
+// { autofold
+import java.util.Arrays;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+// }
+
+var list = List.of("Hello", "World", "from", "Java");
+System.out.println(list);
+var set = Set.of("Hello", "World", "from", "Java", "World");
+System.out.println(set);
+
+//{ autofold
+    }
+}
+//}
+```
+
 # Notes
 This playground is based on IteratrLearning's article [Collection Factory Methods in Java 9](http://iteratrlearning.com/java9/2016/11/09/java9-collection-factory-methods.html)
 
