@@ -181,7 +181,7 @@ CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.L
         Main::convert)
     .acceptEither(
         timeoutAfter(1, TimeUnit.SECONDS),
-        amount -> System.out.printf("The price is %f %s", amount, Currency.GBP));
+        amount -> System.out.printf("The price is %s %s", amount, Currency.GBP));
 
 //{ autofold
         delayer.awaitTermination(1, TimeUnit.SECONDS);
