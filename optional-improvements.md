@@ -257,7 +257,7 @@ class Client {
 ```
 
 # get
-There is an outstanding proposal to deprecate `Optional.get()` and rename it to something else. The full details of this proposal can be read here. Despite this proposal having merit the schedule constraints mean that it is unlikely to make Java 9, but might happen in Java 10.
+There is an outstanding proposal to deprecate `Optional.get()` and rename it to something else. The full details of this proposal can be read [here](http://mail.openjdk.java.net/pipermail/core-libs-dev/2016-April/040484.html). Despite this proposal having merit it is still not in Java (latest version: 12) as of today.
 
 # Conclusions
 We've talked about Java 8's `Optional` class is being improved in Java 9 with a series of targeted method that each fill a missing use case. Unfortunately, the primitive specialised `Optional` classes, such as `OptionalInt` aren't getting all the same love - they have had `stream()` and `ifPresentOrElse()` added, but not `or()`. They have always been missing some of the methods from `Optional` and are increasingly looking like poor cousins.
