@@ -118,7 +118,7 @@ class Utils {
     }
 
     static BigDecimal decimal(double value) {
-        BigDecimal bigDecimal = new BigDecimal(value);
+        var bigDecimal = new BigDecimal(value);
         bigDecimal = bigDecimal.setScale(SCALE, RoundingMode.HALF_UP);
         return bigDecimal;
     }
@@ -189,7 +189,7 @@ CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.L
     }
 
     private static <T> CompletableFuture<T> timeoutAfter(long timeout, TimeUnit unit) {
-        CompletableFuture<T> future = new CompletableFuture<>();
+        var future = new CompletableFuture<T>();
         delayer.schedule(() -> future.completeExceptionally(new TimeoutException()), timeout, unit);
         return future;
     }
@@ -276,7 +276,7 @@ class Utils {
     }
 
     static BigDecimal decimal(double value) {
-        BigDecimal bigDecimal = new BigDecimal(value);
+        var bigDecimal = new BigDecimal(value);
         bigDecimal = bigDecimal.setScale(SCALE, RoundingMode.HALF_UP);
         return bigDecimal;
     }
@@ -292,7 +292,7 @@ A simple implementation of `timeoutAfter` is as follows where `delayer` is an in
 
 ```java
 <T> CompletableFuture<T> timeoutAfter(long timeout, TimeUnit unit) {
-    CompletableFuture<T> future = new CompletableFuture<>();
+    var future = new CompletableFuture<T>();
     delayer.schedule(() -> future.completeExceptionally(new TimeoutException()), timeout, unit);
     return future;
 }
