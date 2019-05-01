@@ -123,7 +123,7 @@ public class Main {
     public static void main(String[] args) {
 // }
 
-String bookingReference = "FlamingoMotel2019-07-20";
+var bookingReference = "FlamingoMotel2019-07-20";
 lookupBooking(bookingReference)
     .ifPresentOrElse(
         Main::displayCheckIn,
