@@ -37,6 +37,7 @@ public class Main {
 List<Setting> settings = SETTING_NAMES
     .stream()
     .map(Main::lookupSetting)
+    // try replacing with filter and map from above, then removing filter line and see what happens
     .flatMap(Optional::stream)
     .collect(toList());
 System.out.println(settings);
