@@ -80,6 +80,54 @@ System.out.println(set);
 //}
 ```
 
+The way that var-args APIs are implemented in Java is basically syntactic sugar around passing an array as the final parameter to the method, which would mean that these methods have to bear the overhead of instantiating an array. To avoid the performance cost of this operation Java 9 has 10 overloads with a fixed number of elements. When you call the methods you won't even notice the difference without looking at the overloads in your IDE. The downside of this approach is that more code needs to be maintained by JVM engineers and also the API itself is cluttered. If Java had a more efficient way of allocating var-args parameters that would be nice. A man can dream, a man can dream...
+
+# Maps
+Maps have also had factory methods added. They work a little differently as Maps have keys and values rather than a single type of element. For up to 10 entries Maps have overloaded constructors that take pairs of keys and values. For example we could build a map of various cities and their populations (according to google in October 2016) as follow:
+
+```java
+var cities = Map.of("Brussels", 1_139_000, "Cardiff", 341_000);
+```
+
+The var-args case for Map is a little bit harder, you need to have both keys and values, but in Java, methods can't have two var-args parameters. So the general case is handled by taking a var-args method of `Map.Entry<K, V>` objects and adding a static `entry()` method that constructs them. For example:
+
+```java runnable
+// { autofold
+import java.util.Map;
+
+import static java.util.Map.entry;
+
+public class Main {
+    public static void main(String[] args) {
+// }
+
+var cities = Map.ofEntries(entry("Brussels", 1_139_000), entry("Cardiff", 341_000));
+System.out.println(cities);
+
+//{ autofold
+    }
+}
+//}
+```
+
+# Safety
+The goal here isn't just to reduce verbosity though, it is to also reduce the scope for programmer errors. All the collections added in recent years have banned the use of nulls as elements within the collections and these collections follow suit. This helps reduce the scope for bugs around referring to null values in collections and also simplifies the internal implementation.
+
+A bigger difference when compared to most collections in the JDK is that these collections are Immutable. Immutability reduces the scope for bugs by removing the ability for one part of an application to cause bugs by modifying state that another component is relying on. In the case of these factory methods no new interfaces were introduced as part of this process. So they will expose an `add()` method that will throw an `UnsupportedOperationException()`. This is not ideal, but adding a separate hierarchy of Immutable collection interfaces would have massively bloated the scope of this small API change.
+
+A similar, but distinct feature that Java already has are the collection views returned by Collections.unmodifiableList(), unmodifiableSet(), and unmodifiableMap(). They have similar behaviour to the immutable collections in that they throw an `UnsupportedOperationException` when you try to modify them directly. They still aren't the same though, since the unmodifiable views wrap a reference to an existing collection. If that existing collection is modified then that change is visible to readers of the unmodifiable view. However, immutable collections can never be changed at all.
+
+Another safety concept used here is the compile time type-safety of `Map.ofEntries()`. An alternative implementation, for instance, was to have the `ofEntries()` factory method take an `Object...` varargs parameter. This would have been intended to take alternative keys and values. This implementation raises the possibility of new kinds of errors, such as using the wrong type for a key or a value, or having an odd number of elements. These can only be caught at runtime. The `Map.ofEntries(Entry...)` approach is compile-time type-safe, at the cost of boxing each key and value into an `Entry` object.
+
+The final safety feature is the randomized iteration order of the immutable `Set` elements and `Map` keys. `HashSet` and `HashMap` iteration order has always been unspecified, but fairly stable, leading to code having inadvertent dependencies on that order. This causes things to break when the iteration order changes, which occasionally happens. The new Set/Map collections change their iteration order from run to run, hopefully flushing out order dependencies earlier in test or development.
+
+# Conclusions
+Collection literals are an appealing language feature, adding some easier syntax to perform a common operation. However, the cost-benefit tradeoff is much better for Collection factory methods that are simply a library change. They give us most of the benefits without any language changes. The addition of these factory methods in Java 9 provides Immutable collections that ban the use of null values as elements.
+
+If you enjoy watching conference talks there's also a good video by Stuart Marks from the Java Core Libraries team on [youtube](https://www.youtube.com/watch?v=LgR9ByD1dEw).
+
+If you are interested in an intensive Java course for your team, check out our [Java Software Development Bootcamp](http://iteratrlearning.com/javabootcamp) or [Modern Development with Java](http://iteratrlearning.com/java8course).
+
 # Notes
 This playground is based on IteratrLearning's article [Collection Factory Methods in Java 9](http://iteratrlearning.com/java9/2016/11/09/java9-collection-factory-methods.html)
 
