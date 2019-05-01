@@ -1,4 +1,4 @@
-# Java 9 Improvements - Tech.io playground
+# [Java 9 Improvements - Tech.io playground](https://tech.io/playgrounds/84c7ec6b8764a8878bd53fc1e42bc67394664/java-9-improvements)
 Adapted 5 articles about Java 9 by IteratrLearning to Tech.io playground, improved code a bit, fixed links. List of articles:
 1. [Stream Improvements in Java 9](http://iteratrlearning.com/java9/2016/08/06/java9-streams.html)
 2. [Collectors Improvements in Java 9](http://iteratrlearning.com/java9/2016/08/16/java9-collectors.html)
