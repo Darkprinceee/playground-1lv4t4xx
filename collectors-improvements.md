@@ -221,7 +221,7 @@ enum Tag {
 Note that the `flatMapping` collector is related to the `flatMap` method from the Stream API. The `flatMap` method takes a function producing a Stream of zero or more elements for each element in the input Stream. The result is then flattened in a single stream.
 
 # More collectors
-If you are interested about more collectors, take a look at the [Eclipse collections](https://www.eclipse.org/collections/) ([Eclipse Collections Cheat Sheet](https://github.com/eclipse/eclipse-collections/blob/master/docs/guide.md#-eclipse-collections-cheat-sheet)) which provides additional collectors such as `zip`, `zipWithIndex` and `chunk`. You can also always write your own custom collector by implementing the `Collector` interface.
+If you are interested about more collectors, take a look at the [Eclipse Collections](https://www.eclipse.org/collections/) ([Eclipse Collections Cheat Sheet](https://github.com/eclipse/eclipse-collections/blob/master/docs/guide.md#-eclipse-collections-cheat-sheet)) which provides additional collectors such as `zip`, `zipWithIndex` and `chunk`. You can also always write your own custom collector by implementing the `Collector` interface.
 
 If you are interested in an intensive Java course for your team, check out our [Java Software Development Bootcamp](http://iteratrlearning.com/javabootcamp) or [Modern Development with Java](http://iteratrlearning.com/java8course).
 
