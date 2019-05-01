@@ -16,14 +16,14 @@ For the rest of article we will assume the following `Expense` and `Tag` class d
 
 ```java
 class Expense {
-	private final long amount;
-	private final int year;
-	private final List<Tag> tags;
+    private final long amount;
+    private final int year;
+    private final List<Tag> tags;
 
-	Expense(long amount, int year, List<Tag> tags) {
-		this.amount = amount;
-		this.year = year;
-		this.tags = tags;
+    Expense(long amount, int year, List<Tag> tags) {
+        this.amount = amount;
+        this.year = year;
+        this.tags = tags;
 	}
 
 	long getAmount() {
