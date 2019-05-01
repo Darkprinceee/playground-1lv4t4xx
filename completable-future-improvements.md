@@ -32,7 +32,7 @@ BigDecimal amount =
         .thenCombine(CompletableFuture.supplyAsync(() -> exchangeService.rateFor(Currency.GBP)),
             Main::convert)
         .get();
-System.out.printf("The price is %f %s", amount, Currency.GBP);
+System.out.printf("The price is %s %s", amount, Currency.GBP);
 
 //{ autofold
     }
