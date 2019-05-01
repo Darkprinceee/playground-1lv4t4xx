@@ -141,7 +141,7 @@ BigDecimal amount =
         .thenCombine(CompletableFuture.supplyAsync(() -> exchangeService.rateFor(Currency.GBP)),
             Main::convert)
         .get(1, TimeUnit.SECONDS);
-System.out.printf("The price is %f %s", amount, Currency.GBP);
+System.out.printf("The price is %s %s", amount, Currency.GBP);
 ```
 
 Unfortunately this code is still blocking and prevents the main thread from doing useful work in the meantime! To tackle this issue, you can refactor the above code to use `thenAccept` and provide a callback which is executed when the result is finally available:
@@ -150,7 +150,7 @@ Unfortunately this code is still blocking and prevents the main thread from doin
 CompletableFuture.supplyAsync(() -> flightRoutePriceFinder.bestFor(AirportCode.LCY, AirportCode.JFK))
     .thenCombine(CompletableFuture.supplyAsync(() -> exchangeService.rateFor(Currency.GBP)),
         Main::convert)
-    .thenAccept(amount -> System.out.printf("The price is %f %s", amount, Currency.GBP));
+    .thenAccept(amount -> System.out.printf("The price is %s %s", amount, Currency.GBP));
 ```
 
 However, using this approach we lost the timeout functionality! Ideally we'd like to specify a timeout using a non-blocking method. Unfortunately there isn't a built-in elegant support to solve this problem in Java 8. Solutions available include using `acceptEither` or `applyToEither` together with the `CompletableFuture` you are waiting the result for and another `CompletableFuture` which wraps up a `ScheduledThreadpoolExecutor` that throws a `TimeoutException` after a certain time:
