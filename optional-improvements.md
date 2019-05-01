@@ -137,7 +137,7 @@ lookupBooking(bookingReference)
     }
 
     private static void displayCheckIn(Booking booking) {
-        System.out.println(String.format("Check-in at %s: %s", booking.getHotel(), booking.getCheckIn()));
+        System.out.printf("Check-in at %s: %s", booking.getHotel(), booking.getCheckIn());
     }
 
     private static void displayMissingBookingPage() {
